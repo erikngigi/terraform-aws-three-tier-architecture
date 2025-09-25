@@ -14,15 +14,15 @@ data "aws_ami" "ubuntu_latest" {
   owners = [var.ami_owner_id]
 }
 
-resource "aws_instance" "odoo_instance" {
+resource "aws_instance" "magento" {
   ami                         = data.aws_ami.ubuntu_latest.id
   instance_type               = var.ami_type
-  key_name                    = var.key_pair
+  key_name                    = var.ec2_ssh_key
   associate_public_ip_address = true
-  security_groups             = [var.sg_id]
-  subnet_id                   = var.pub_subnet_id
+  security_groups             = [var.ec2_sg]
+  subnet_id                   = var.public_subnet
 
   tags = {
-    Name = var.ec2_name
+    Name = "${var.project_name}-ec2"
   }
 }

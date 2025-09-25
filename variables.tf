@@ -1,46 +1,12 @@
+# Main details
+variable "project_name" {
+  description = "Name of the project for resource tagging"
+  type        = string
+}
+
 # Networking
-variable "vpc_cidr_block" {
+variable "vpc_cidr" {
   description = "VPC CIDR value"
-  type        = string
-}
-
-variable "vpc_cidr_block_name" {
-  description = "VPC CIDR name"
-  type        = string
-}
-
-variable "public_subnet_cidrs" {
-  description = "Public Subnet CIDR values"
-  type        = string
-}
-
-variable "public_subnet_cidrs_name" {
-  description = "Public Subnet name"
-  type        = string
-}
-
-variable "private_subnet_cidrs_name" {
-  description = "Private Subnet name"
-  type        = string
-}
-
-variable "private_subnet_cidrs" {
-  description = "Private Subnet CIDR values"
-  type        = string
-}
-
-variable "azs" {
-  description = "Availability Zones"
-  type        = string
-}
-
-variable "igw_name" {
-  description = "Internet Gateway name"
-  type        = string
-}
-
-variable "irt_name" {
-  description = "Internet Route Table name"
   type        = string
 }
 
@@ -50,23 +16,8 @@ variable "ssh_pub_key" {
   type        = string
 }
 
-variable "ssh_pub_key_name" {
-  description = "Public SSH Key Name"
-  type        = string
-}
-
-variable "sg_name" {
-  description = "Security Group name"
-  type        = string
-}
-
-variable "sg_description" {
-  description = "Security Group for Odoo"
-  type        = string
-}
-
-variable "ig_rules" {
-  description = "Inbound Security Rules"
+variable "ec2_ingress" {
+  description = "Application Load Balancer inbound rules"
   type = map(object({
     description   = string
     port          = number
@@ -75,8 +26,27 @@ variable "ig_rules" {
   }))
 }
 
-variable "eg_rules" {
-  description = "Outbound Security Rules"
+variable "ec2_egress" {
+  description = "Application Load Balancer outbound rules"
+  type = map(object({
+    description   = string
+    port          = number
+    protocol      = string
+    sg_cidr_block = list(string)
+  }))
+}
+
+variable "mysql_rds_ingress" {
+  description = "MySQL RDS inbound rules"
+  type = map(object({
+    description = string
+    port        = number
+    protocol    = string
+  }))
+}
+
+variable "mysql_rds_egress" {
+  description = "MySQL RDS outbound rules"
   type = map(object({
     description   = string
     port          = number
@@ -109,7 +79,33 @@ variable "ami_type" {
   type        = string
 }
 
-variable "ec2_name" {
-  description = "Name to assign to the EC2 instance"
+# Databases
+variable "rds_engine" {
+  description = "Relation Database Engine to implement"
   type        = string
+}
+
+variable "rds_engine_version" {
+  description = "Relation Database Engine version to implement"
+  type        = string
+}
+
+variable "rds_instance_class" {
+  description = "Instance class for RDS"
+  type        = string
+}
+
+variable "allocated_storage" {
+  description = "Allocated storage size for the RDS"
+  type        = string
+}
+
+variable "rds_username" {
+  description = "RDS username"
+  type = string
+}
+
+variable "rds_password" {
+  description = "RDS user password"
+  type = string
 }

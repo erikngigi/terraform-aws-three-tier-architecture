@@ -1,35 +1,41 @@
 module "network" {
-  source                    = "./modules/network"
-  vpc_cidr_block            = var.vpc_cidr_block
-  vpc_cidr_block_name       = var.vpc_cidr_block_name
-  public_subnet_cidrs       = var.public_subnet_cidrs
-  private_subnet_cidrs      = var.private_subnet_cidrs
-  public_subnet_cidrs_name  = var.public_subnet_cidrs_name
-  private_subnet_cidrs_name = var.private_subnet_cidrs_name
-  azs                       = var.azs
-  igw_name                  = var.igw_name
-  irt_name                  = var.irt_name
+  source       = "./modules/network"
+  project_name = var.project_name
+  vpc_cidr     = var.vpc_cidr
 }
 
 module "security" {
-  source           = "./modules/security"
-  ssh_pub_key      = var.ssh_pub_key
-  ssh_pub_key_name = var.ssh_pub_key_name
-  sg_name          = var.sg_name
-  sg_description   = var.sg_description
-  eg_rules         = var.eg_rules
-  ig_rules         = var.ig_rules
-  vpc_id           = module.network.vpc_id
+  source            = "./modules/security"
+  project_name      = var.project_name
+  ssh_pub_key       = var.ssh_pub_key
+  ec2_ingress       = var.ec2_ingress
+  ec2_egress        = var.ec2_egress
+  mysql_rds_ingress = var.mysql_rds_ingress
+  mysql_rds_egress  = var.mysql_rds_egress
+  vpc_id            = module.network.vpc_id
 }
 
 module "instance" {
   source             = "./modules/instances"
+  project_name       = var.project_name
   ami_name_pattern   = var.ami_name_pattern
   ami_virtualization = var.ami_virtualization
   ami_owner_id       = var.ami_owner_id
   ami_type           = var.ami_type
-  ec2_name           = var.ec2_name
-  pub_subnet_id      = module.network.public_subnet_id
-  sg_id              = module.security.sg
-  key_pair           = module.security.key_pair
+  ec2_sg             = module.security.ec2_sg
+  ec2_ssh_key        = module.security.ec2_ssh_key
+  public_subnet      = module.network.public_subnet
+}
+
+module "database" {
+  source                   = "./modules/database"
+  project_name             = var.project_name
+  rds_engine               = var.rds_engine
+  rds_engine_version       = var.rds_engine_version
+  rds_instance_class       = var.rds_instance_class
+  allocated_storage        = var.allocated_storage
+  rds_username             = var.rds_username
+  rds_password             = var.rds_password
+  mysql_rds_security_group = module.security.mysql_rds_sg
+  mysql_rds_subnet_group   = module.network.mysql_rds_subnet
 }

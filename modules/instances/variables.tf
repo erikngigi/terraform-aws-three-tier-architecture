@@ -1,3 +1,10 @@
+# Main details
+variable "project_name" {
+  description = "Name of the project for resource tagging"
+  type        = string
+}
+
+# Instance details
 variable "ami_name_pattern" {
   description = "AMI name pattern"
   type        = string
@@ -21,21 +28,20 @@ variable "ami_type" {
   type        = string
 }
 
-variable "ec2_name" {
-  description = "Name to assign to the EC2 instance"
+# Imported details
+# Network details
+variable "public_subnet" {
+  description = "Public subnet value from network module"
   type        = string
 }
 
-variable "pub_subnet_id" {
-  description = "Public Subnet ID (network module)"
+# Security details
+variable "ec2_sg" {
+  description = "EC2 security group from the security module"
   type        = string
 }
 
-variable "sg_id" {
-  description = "Security Group ID (security module)"
+variable "ec2_ssh_key" {
+  description = "EC2 SSH public key from the security module"
   type        = string
-}
-
-variable "key_pair" {
-  description = "Public SSH Key ID (security module)"
 }
