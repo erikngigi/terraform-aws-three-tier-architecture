@@ -10,6 +10,11 @@ variable "vpc_cidr" {
   type        = string
 }
 
+variable "target_alb_port" {
+  description = "Target port for the Application load balancer"
+  type        = string
+}
+
 # Security
 variable "ssh_pub_key" {
   description = "Public SSH Key for the EC2 instance"

@@ -3,9 +3,14 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "public_subnet" {
-  description = "Resource output for the public subnet values"
-  value       = aws_subnet.public_subnet[0].id
+output "private_subnet_1" {
+  description = "Resource output for the private subnet values for ec2"
+  value       = aws_subnet.private_subnet[0].id
+}
+
+output "private_subnet_2" {
+  description = "Resource output for the private subnet values for ec2"
+  value       = aws_subnet.private_subnet[1].id
 }
 
 output "mysql_rds_subnet" {

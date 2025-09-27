@@ -30,8 +30,13 @@ variable "ami_type" {
 
 # Imported details
 # Network details
-variable "public_subnet" {
-  description = "Public subnet value from network module"
+variable "private_subnet_1" {
+  description = "Private subnet 1 value from network module"
+  type        = string
+}
+
+variable "private_subnet_2" {
+  description = "Private subnet 2 value from network module"
   type        = string
 }
 
@@ -43,5 +48,10 @@ variable "ec2_sg" {
 
 variable "ec2_ssh_key" {
   description = "EC2 SSH public key from the security module"
+  type        = string
+}
+
+variable "ec2_ssm_profile" {
+  description = "EC2 ssm profile name from the security module"
   type        = string
 }

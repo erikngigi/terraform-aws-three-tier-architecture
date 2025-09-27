@@ -1,7 +1,11 @@
 module "network" {
-  source       = "./modules/network"
-  project_name = var.project_name
-  vpc_cidr     = var.vpc_cidr
+  source           = "./modules/network"
+  project_name     = var.project_name
+  vpc_cidr         = var.vpc_cidr
+  ec2_sg           = module.security.ec2_sg
+  target_alb_port  = var.target_alb_port
+  ec2_instance_id1 = module.instance.ec2_instance_id1
+  ec2_instance_id2 = module.instance.ec2_instance_id2
 }
 
 module "security" {
@@ -24,7 +28,9 @@ module "instance" {
   ami_type           = var.ami_type
   ec2_sg             = module.security.ec2_sg
   ec2_ssh_key        = module.security.ec2_ssh_key
-  public_subnet      = module.network.public_subnet
+  ec2_ssm_profile    = module.security.ec2_ssm_profile
+  private_subnet_1   = module.network.private_subnet_1
+  private_subnet_2   = module.network.private_subnet_2
 }
 
 module "database" {

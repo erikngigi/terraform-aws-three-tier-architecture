@@ -1,5 +1,9 @@
-output "ec2_ipv4_address" {
-  value = module.instance.ec2_ipv4_address
+output "ec2_instance_id1" {
+  value = module.instance.ec2_instance_id1
+}
+
+output "ec2_instance_id2" {
+  value = module.instance.ec2_instance_id2
 }
 
 output "mysql_rds_endpoint" {

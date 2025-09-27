@@ -1,4 +1,9 @@
-output "ec2_ipv4_address" {
-  description = "Public IPv4 address from the EC2"
-  value       = aws_instance.magento.public_ip
+output "ec2_instance_id1" {
+  description = "EC2 instance ID 1"
+  value       = aws_instance.magento1.id
+}
+
+output "ec2_instance_id2" {
+  description = "EC2 instance ID 2"
+  value       = aws_instance.magento2.id
 }
