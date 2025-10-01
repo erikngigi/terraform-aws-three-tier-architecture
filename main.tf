@@ -9,14 +9,15 @@ module "network" {
 }
 
 module "security" {
-  source            = "./modules/security"
-  project_name      = var.project_name
-  ssh_pub_key       = var.ssh_pub_key
-  ec2_ingress       = var.ec2_ingress
-  ec2_egress        = var.ec2_egress
-  mysql_rds_ingress = var.mysql_rds_ingress
-  mysql_rds_egress  = var.mysql_rds_egress
-  vpc_id            = module.network.vpc_id
+  source                = "./modules/security"
+  project_name          = var.project_name
+  ssh_pub_key           = var.ssh_pub_key
+  ec2_ingress           = var.ec2_ingress
+  ec2_egress            = var.ec2_egress
+  mysql_rds_ingress     = var.mysql_rds_ingress
+  mysql_rds_egress      = var.mysql_rds_egress
+  vpc_id                = module.network.vpc_id
+  ec2_config_bucket_arn = module.storage.ec2_config_bucket_arn
 }
 
 module "instance" {
@@ -44,4 +45,9 @@ module "database" {
   rds_password             = var.rds_password
   mysql_rds_security_group = module.security.mysql_rds_sg
   mysql_rds_subnet_group   = module.network.mysql_rds_subnet
+}
+
+module "storage" {
+  source       = "./modules/storage"
+  project_name = var.project_name
 }

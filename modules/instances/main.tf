@@ -22,7 +22,6 @@ resource "aws_instance" "magento1" {
   security_groups             = [var.ec2_sg]
   subnet_id                   = var.private_subnet_1
   iam_instance_profile        = var.ec2_ssm_profile
-  user_data                   = file("${path.module}/ssm.sh")
 
   tags = {
     Name = "${var.project_name}-1-ec2"
@@ -37,7 +36,6 @@ resource "aws_instance" "magento2" {
   security_groups             = [var.ec2_sg]
   subnet_id                   = var.private_subnet_2
   iam_instance_profile        = var.ec2_ssm_profile
-  user_data                   = file("${path.module}/ssm.sh")
 
   tags = {
     Name = "${var.project_name}-2-ec2"

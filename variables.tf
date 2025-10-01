@@ -107,10 +107,10 @@ variable "allocated_storage" {
 
 variable "rds_username" {
   description = "RDS username"
-  type = string
+  type        = string
 }
 
 variable "rds_password" {
   description = "RDS user password"
-  type = string
+  type        = string
 }

@@ -55,3 +55,9 @@ variable "vpc_id" {
   description = "Main VPC ID from network module"
   type        = string
 }
+
+# Storage
+variable "ec2_config_bucket_arn" {
+  description = "ARN bucket with ec2 configuration files from storage module"
+  type        = string
+}
