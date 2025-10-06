@@ -1,156 +1,243 @@
-# Magento Three-Tier AWS Infrastucture - Provisioned with Terraform
-
----
+# Three-Tier AWS Infrastructure — Provisioned with Terraform
 
 ## Project Overview
 
-This repository will contain Terraform code and documentation to deploy a secure, scalable, and maintainable three-tier architecture for **Magento** on **AWS**. The intent is to provide a reusable reference implementation that teams can adapt for development, staging, and production environments.
+This repository contains the foundational architecture for deploying a **secure, scalable, and maintainable three-tier infrastructure on AWS**.
+
+The design follows AWS best practices for high availability, fault tolerance, and environment isolation. It provides a flexible foundation suitable for hosting modern web applications — such as Magento, WordPress, or any custom-built app — across multiple Availability Zones.
+
+### Status
+
+![Architecture Status](https://img.shields.io/badge/Architecture-Complete-blue)
+![Application Setup](https://img.shields.io/badge/Application_Setup-On_going-yellow)
 
 ---
 
-## Status
+## Architecture Overview
 
-**Placeholder / Not started.**
-This README is a project scaffold — no infrastructure, code, or Terraform modules exist yet. Use this document to guide design, implementation, and contributions.
+### 🧱 Layers
 
----
+The architecture is built on a **Three-Tier Model**:
 
-## Planned Features
+1. **Presentation (Web) Tier**
+   - Public subnets with **NAT Gateways** for outbound internet access.
+   - **Internet Gateway** for inbound and outbound connectivity for external users.
 
-* **Infrastructure as Code**
+2. **Application (App) Tier**
+   - EC2 instances (App Servers) deployed in **private subnets**.
+   - Accesses the database and file system tiers through internal routing.
 
-  * Terraform modules for repeatable components (networking, compute, database, caching, security).
-* **Networking**
-
-  * VPC, public & private subnets, NAT/IGW, Route 53 for DNS.
-* **Compute**
-
-  * Auto Scaling for web and application layers (EC2 or container-based options like ECS/EKS).
-* **Persistence**
-
-  * Managed RDS (MySQL/MariaDB/Aurora) for Magento data with automated backups.
-* **Caching & Search**
-
-  * ElastiCache (Redis) for sessions/cache; OpenSearch (optional) for catalog search.
-* **Storage & CDN**
-
-  * S3 for media/static assets and CloudFront for global delivery.
-* **Load Balancing**
-
-  * Application Load Balancer for HTTP(S) traffic with health checks.
-* **Security**
-
-  * Least-privilege IAM roles, Security Groups, NACLs, AWS WAF, ACM-managed TLS certificates, KMS for encryption.
-* **Operational Excellence**
-
-  * CloudWatch metrics, logs, alerts, centralized logging.
-* **CI/CD**
-
-  * Reference pipeline (e.g., GitHub Actions / AWS CodePipeline) for Terraform, image builds and application deploys.
-* **Compliance & Scanning**
-
-  * IaC linting (tflint), formatting (`terraform fmt`), static security scanning (checkov/terrascan).
-* **Testing**
-
-  * `terraform validate`, `terraform plan` gating; Terratest for integration tests.
+3. **Database (Data) Tier**
+   - Amazon **RDS MySQL** (Primary and Replica) planned for deployment in private subnets.
+   - Designed for data replication, high availability, and security.
+   - **Elastic File System (EFS)** used for shared application storage across EC2 instances.
 
 ---
 
-## Architecture (intended)
+## Current Architecture Diagram
 
-A canonical Three-Tier model:
+![Three-Tier AWS Architecture](./terraform-aws-three-tier-architecture.svg)
 
-* **Presentation (Web) Tier**
+### Key Components
 
-  * ALB → web servers serving static content (S3/CloudFront) and forwarding dynamic requests to the app tier.
-* **Application (App) Tier**
+- **VPC (172.0.0.0/16)** spanning multiple Availability Zones (`us-east-1a`, `us-east-1b`)
+- **Public Subnets**
+  - Contain NAT Gateways for secure outbound traffic from private instances.
 
-  * PHP-FPM / FPM workers (EC2 Auto Scaling or containers) running Magento application code.
-  * Connects to cache, search, and DB.
-* **Database (DB) Tier**
+- **Private Subnets**
+  - Host EC2 App Servers and RDS instances.
 
-  * Managed RDS/Aurora for transactional data. Private subnets only.
+- **Elastic File System (EFS)**
+  - Shared storage accessible from application servers.
 
-Additional components: S3 (media), ElastiCache (Redis) for sessions/cache, CloudFront, Route53, IAM, Secrets Manager/SSM Parameter Store.
+- **Security Groups**
+  - Separate groups for EC2, MySQL, and EFS to enforce least-privilege access.
+
+- **High Availability**
+  - Multi-AZ design for redundancy and fault tolerance.
 
 ---
 
-## Project Structure (planned)
+## Completed Features
 
-```
-├── modules/                # Reusable Terraform modules (vpc, alb, asg, rds, cache, iam)
-├── envs/
-│   ├── dev/
-│   ├── staging/
-│   └── prod/
-├── examples/               # Example usage of modules
-├── docs/                   # Architecture diagrams, runbooks, operational guides
-├── scripts/                # Helper scripts (deploy, bootstrap)
-└── README.md               # This file
+### ✅ Infrastructure as Code (IaC)
+
+- Modular **Terraform** configuration for reusable networking, compute, and security components.
+
+### ✅ Networking
+
+- Custom **VPC**, route tables, **public and private subnets**, **NAT Gateways**, and **Internet Gateway**.
+
+### ✅ Compute
+
+- Deployed **EC2 instances** in private subnets for the application tier.
+- Configured **security groups** and network ACLs.
+
+### ✅ Storage
+
+- Configured **Elastic File System (EFS)** for shared persistent storage across multiple app servers.
+
+### ✅ Security
+
+- Granular **IAM roles and policies**, least-privilege security groups, and isolated subnet design.
+- Secure private connectivity between tiers.
+
+---
+
+## In Progress
+
+### 🚧 Database
+
+- **RDS MySQL (Primary & Replica)** configuration and connection testing.
+- Parameter tuning, backup, and automated failover setup.
+
+🚧 Application Setup
+
+- Preparing environment for application deployment (e.g., Magento or another web app).
+- Testing connectivity between App Tier and Database Tier.
+- Automating deployment and configuration scripts.
+
+### 🚧 Monitoring & Logging
+
+- Integrating **CloudWatch metrics, alarms, and dashboards**.
+- Planning centralized log management (CloudWatch Logs / AWS OpenSearch).
+
+### 🚧 Documentation
+
+- Detailed implementation guide and Terraform module documentation are being finalized.
+
+---
+
+## Repository Structure
+
+```bash
+.
+├── .terraform
+│   ├── modules
+│   │   └── modules.json
+│   └── providers
+│       └── registry.terraform.io
+├── .terraform.lock.hcl
+├── .terraform.log
+├── cloud-init
+│   ├── configuration
+│   │   ├── zsh
+│   │   └── zsh-home
+│   └── shell-scripts
+│       └── bootstrap.sh
+├── main.tf
+├── modules
+│   ├── containers
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── database
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── instances
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── management
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── network
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── notifications
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── scaling
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── security
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── severless
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   └── storage
+│       ├── main.tf
+│       ├── outputs.tf
+│       └── variables.tf
+├── outputs.tf
+├── provider.tf
+├── README.md
+└── variables.tf
 ```
 
 ---
 
 ## Getting Started (Planned)
 
-**Prerequisites**
+### Prerequisites
 
-* AWS account and appropriate permissions (IAM user/role).
-* Terraform (pinned version to be defined).
-* AWS CLI configured.
-* Recommended tools: `tflint`, `terraform-docs`, `checkov`.
+- AWS account with sufficient permissions.
+- Terraform installed (version pinned TBD).
+- AWS CLI configured.
+- Recommended tools: `tflint`, `terraform-docs`, `checkov`.
 
-**Planned Quick-start steps**
+### Example Setup
 
 ```bash
 # 1. Clone repository
-git clone git@github.com:your-org/magento-3tier-aws-terraform.git
-cd magento-3tier-aws-terraform
+git clone https://github.com/erikngigi/terraform-aws-three-tier-architecture.git
+cd terraform-aws-three-tier-architecture
 
-# 2. Select environment (example)
-cd envs/dev
-
-# 3. Initialize Terraform
+# 2. Initialize Terraform
 terraform init
 
-# 4. Review plan
+# 4. Review configuration
 terraform plan -var-file=dev.tfvars
 
-# 5. Apply (after review)
+# 5. Apply infrastructure
 terraform apply -var-file=dev.tfvars
 ```
-
-> Note: The above commands are placeholders. Detailed variable lists, backend configuration, and secure secrets handling (Secrets Manager / SSM) will be provided once implementation begins.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Planned guidelines:
+Contributions are welcome as this project continues to evolve.
 
-* Open an issue to propose features or report problems.
-* Fork, create a feature branch, and open a PR with a clear description.
-* Run `terraform fmt`, `terraform validate`, and linting before creating PRs.
-* PRs should include a short test plan and reviewer assignment.
-* Use semantic commit messages; link PRs to issues.
+**Guidelines:**
 
-A `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and PR/issue templates will be added when development starts.
+- Open an issue before implementing major changes.
+- Fork the repo, create a feature branch, and submit a PR with a clear description.
+- Run `terraform fmt`, `terraform validate`, and linting before submitting.
+- Follow semantic commit message conventions.
+
+Future additions:
+
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- PR and issue templates.
 
 ---
 
-## Roadmap & Milestones (planned)
+## Roadmap & Milestones
 
-1. **Repository skeleton** — modules directory, env layout, README, CONTRIBUTING.
-2. **Core networking** — VPC, subnets, routing, base IAM roles.
-3. **Compute basics** — web/app ASGs or container baseline, ALB.
-4. **Data and cache** — RDS, ElastiCache.
-5. **Storage & CDN** — S3 + CloudFront, media handling.
-6. **CI/CD & testing** — pipelines, validation and tests.
-7. **Security hardening & monitoring** — WAF, KMS, CloudWatch dashboards, alerts.
-8. **Documentation & runbooks** — production runbooks, troubleshooting guides.
+| Milestone              | Description                                 | Status         |
+| ---------------------- | ------------------------------------------- | -------------- |
+| 🧩 Repository Skeleton | Modules, environment layout, README         | ✅ Completed   |
+| 🌐 Networking Layer    | VPC, subnets, routing, IAM roles            | ✅ Completed   |
+| 💻 Compute Layer       | EC2 instances, private/public subnets       | ✅ Completed   |
+| 📦 Storage Layer       | EFS setup and integration                   | ✅ Completed   |
+| 🔐 Security Hardening  | IAM, NACLs, Security Groups                 | ✅ Completed   |
+| 🗄️ Database Layer      | RDS MySQL setup and replication             | 🚧 In Progress |
+| ⚙️ Application Setup   | Environment prep and app deployment testing | 🚧 In Progress |
+| ⚙️ Monitoring          | CloudWatch metrics, logging, alerts         | 🚧 In Progress |
+| 📘 Documentation       | Detailed guides and module docs             | 🚧 In Progress |
 
 ---
 
 ## License
 
-TBD — A license will be chosen and added before the first release (suggested options: **Apache-2.0** or **MIT**).
+License to be determined.
