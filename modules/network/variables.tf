@@ -22,12 +22,12 @@ variable "ec2_sg" {
 }
 
 # Instance
-variable "ec2_instance_id1" {
-  description = "EC2 instance ID 1 from instance module"
+variable "ec2_instance_id_1" {
+  description = "1st EC2 ID value (instance module)"
   type        = string
 }
 
-variable "ec2_instance_id2" {
-  description = "EC2 instance ID 2 from instance module"
+variable "ec2_instance_id_2" {
+  description = "2nd EC2 ID value (instance module)"
   type        = string
 }

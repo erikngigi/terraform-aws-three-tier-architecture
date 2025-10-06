@@ -50,6 +50,25 @@ variable "mysql_rds_egress" {
   }))
 }
 
+variable "efs_ingress" {
+  description = "Elastic File System (EFS) inbound rules"
+  type = map(object({
+    description = string
+    port        = number
+    protocol    = string
+  }))
+}
+
+variable "efs_egress" {
+  description = "Elastic File System (EFS) outbound rules"
+  type = map(object({
+    description   = string
+    port          = number
+    protocol      = string
+    sg_cidr_block = list(string)
+  }))
+}
+
 # Network
 variable "vpc_id" {
   description = "Main VPC ID from network module"

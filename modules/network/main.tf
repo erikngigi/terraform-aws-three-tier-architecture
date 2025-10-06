@@ -30,25 +30,13 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_subnet" "private_subnet" {
-  count             = 4
+  count             = 6
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 4, count.index + 2)
   availability_zone = element(data.aws_availability_zones.available.names, count.index % 2)
 
   tags = {
     Name = "${var.project_name}-private-subnet-${count.index + 1}"
-  }
-}
-
-resource "aws_db_subnet_group" "ec2_subnet" {
-  name = "${var.project_name}-ec2-subnet-group"
-  subnet_ids = [
-    aws_subnet.private_subnet[0].id,
-    aws_subnet.private_subnet[1].id,
-  ]
-
-  tags = {
-    Name = "${var.project_name}-ec2-subnet-group"
   }
 }
 
@@ -114,6 +102,10 @@ resource "aws_route_table" "private" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat[count.index].id
   }
+
+  tags = {
+    Name = "${var.project_name}-private-route-table"
+  }
 }
 
 resource "aws_route_table_association" "public" {
@@ -146,18 +138,18 @@ resource "aws_lb_target_group" "alb_target_group" {
   vpc_id   = aws_vpc.main.id
 }
 
-resource "aws_lb_target_group_attachment" "ec2_attachment1" {
+resource "aws_lb_target_group_attachment" "ec2_attachment_1" {
   target_group_arn = aws_lb_target_group.alb_target_group.arn
-  target_id        = var.ec2_instance_id1
+  target_id        = var.ec2_instance_id_1
   port             = var.target_alb_port
   depends_on = [
     aws_lb_target_group.alb_target_group,
   ]
 }
 
-resource "aws_lb_target_group_attachment" "ec2_attachment2" {
+resource "aws_lb_target_group_attachment" "ec2_attachment_2" {
   target_group_arn = aws_lb_target_group.alb_target_group.arn
-  target_id        = var.ec2_instance_id2
+  target_id        = var.ec2_instance_id_2
   port             = var.target_alb_port
   depends_on = [
     aws_lb_target_group.alb_target_group,

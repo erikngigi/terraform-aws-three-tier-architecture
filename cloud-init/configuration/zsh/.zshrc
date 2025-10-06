@@ -17,6 +17,7 @@ setopt HIST_IGNORE_SPACE
 #plug "$HOME/.config/zsh/zsh-aliases.zsh"
 plug "$HOME/.config/zsh/zsh-prompt.zsh"
 plug "$HOME/.config/zsh/zsh-vim.zsh"
+plug "$HOME/.config/zsh/zsh-exports.zsh"
 
 # Plugins
 plug "zsh-users/zsh-autosuggestions"

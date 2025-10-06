@@ -60,6 +60,25 @@ variable "mysql_rds_egress" {
   }))
 }
 
+variable "efs_ingress" {
+  description = "Elastic File System (EFS) inbound rules"
+  type = map(object({
+    description = string
+    port        = number
+    protocol    = string
+  }))
+}
+
+variable "efs_egress" {
+  description = "Elastic File System (EFS) outbound rules"
+  type = map(object({
+    description   = string
+    port          = number
+    protocol      = string
+    sg_cidr_block = list(string)
+  }))
+}
+
 # EC2
 variable "ami_name_pattern" {
   description = "AMI name pattern"

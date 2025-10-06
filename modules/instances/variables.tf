@@ -30,24 +30,19 @@ variable "ami_type" {
 
 # Imported details
 # Network details
-variable "private_subnet_1" {
-  description = "Private subnet 1 value from network module"
+variable "ec2_private_subnet_1" {
+  description = "1st EC2 private subnet value (network module)"
   type        = string
 }
 
-variable "private_subnet_2" {
-  description = "Private subnet 2 value from network module"
+variable "ec2_private_subnet_2" {
+  description = "2nd EC2 private subnet value (network module)"
   type        = string
 }
 
 # Security details
 variable "ec2_sg" {
   description = "EC2 security group from the security module"
-  type        = string
-}
-
-variable "ec2_ssh_key" {
-  description = "EC2 SSH public key from the security module"
   type        = string
 }
 

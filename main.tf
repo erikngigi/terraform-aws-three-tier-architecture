@@ -1,11 +1,11 @@
 module "network" {
-  source           = "./modules/network"
-  project_name     = var.project_name
-  vpc_cidr         = var.vpc_cidr
-  ec2_sg           = module.security.ec2_sg
-  target_alb_port  = var.target_alb_port
-  ec2_instance_id1 = module.instance.ec2_instance_id1
-  ec2_instance_id2 = module.instance.ec2_instance_id2
+  source            = "./modules/network"
+  project_name      = var.project_name
+  vpc_cidr          = var.vpc_cidr
+  ec2_sg            = module.security.ec2_sg
+  target_alb_port   = var.target_alb_port
+  ec2_instance_id_1 = module.instance.ec2_instance_id_1
+  ec2_instance_id_2 = module.instance.ec2_instance_id_2
 }
 
 module "security" {
@@ -18,20 +18,21 @@ module "security" {
   mysql_rds_egress      = var.mysql_rds_egress
   vpc_id                = module.network.vpc_id
   ec2_config_bucket_arn = module.storage.ec2_config_bucket_arn
+  efs_ingress           = var.efs_ingress
+  efs_egress            = var.efs_egress
 }
 
 module "instance" {
-  source             = "./modules/instances"
-  project_name       = var.project_name
-  ami_name_pattern   = var.ami_name_pattern
-  ami_virtualization = var.ami_virtualization
-  ami_owner_id       = var.ami_owner_id
-  ami_type           = var.ami_type
-  ec2_sg             = module.security.ec2_sg
-  ec2_ssh_key        = module.security.ec2_ssh_key
-  ec2_ssm_profile    = module.security.ec2_ssm_profile
-  private_subnet_1   = module.network.private_subnet_1
-  private_subnet_2   = module.network.private_subnet_2
+  source               = "./modules/instances"
+  project_name         = var.project_name
+  ami_name_pattern     = var.ami_name_pattern
+  ami_virtualization   = var.ami_virtualization
+  ami_owner_id         = var.ami_owner_id
+  ami_type             = var.ami_type
+  ec2_private_subnet_1 = module.network.ec2_private_subnet_1
+  ec2_private_subnet_2 = module.network.ec2_private_subnet_2
+  ec2_sg               = module.security.ec2_sg
+  ec2_ssm_profile      = module.security.ec2_ssm_profile
 }
 
 module "database" {
@@ -48,6 +49,9 @@ module "database" {
 }
 
 module "storage" {
-  source       = "./modules/storage"
-  project_name = var.project_name
+  source               = "./modules/storage"
+  project_name         = var.project_name
+  efs_private_subnet_1 = module.network.efs_private_subnet_1
+  efs_private_subnet_2 = module.network.efs_private_subnet_2
+  efs_security_group   = module.security.efs_sg
 }

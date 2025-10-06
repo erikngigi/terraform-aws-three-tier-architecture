@@ -3,14 +3,24 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "private_subnet_1" {
-  description = "Resource output for the private subnet values for ec2"
+output "ec2_private_subnet_1" {
+  description = "Private subnet value for the first EC2 instances"
   value       = aws_subnet.private_subnet[0].id
 }
 
-output "private_subnet_2" {
-  description = "Resource output for the private subnet values for ec2"
+output "ec2_private_subnet_2" {
+  description = "Private subnet value for the second EC2 instances"
   value       = aws_subnet.private_subnet[1].id
+}
+
+output "efs_private_subnet_1" {
+  description = "First private subnet value for the EFS"
+  value       = aws_subnet.private_subnet[4].id
+}
+
+output "efs_private_subnet_2" {
+  description = "Second private subnet value for the EFS"
+  value       = aws_subnet.private_subnet[5].id
 }
 
 output "mysql_rds_subnet" {
