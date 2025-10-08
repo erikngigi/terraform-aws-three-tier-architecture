@@ -27,3 +27,8 @@ output "mysql_rds_subnet" {
   description = "Resource output for the MySQL RDS subnet group"
   value       = aws_db_subnet_group.mysql_rds_subnet.name
 }
+
+output "alb_dns_name" {
+  description = "Public DNS name of the Application Load Balancer"
+  value       = aws_lb.app_loadbalancer.dns_name
+}
