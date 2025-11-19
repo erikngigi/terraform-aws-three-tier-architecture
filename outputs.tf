@@ -13,6 +13,11 @@ output "mysql_rds_endpoint" {
   value       = module.database.mysql_rds_endpoint
 }
 
+output "mysql_rds_replica_endpoint" {
+  description = "MySQL RDS Replica endpoint value"
+  value       = module.database.mysql_rds_replica_endpoint
+}
+
 output "efs_dns_name" {
   description = "DNS hostname of the EFS"
   value       = module.storage.efs_dns_hostname

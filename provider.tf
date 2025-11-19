@@ -13,3 +13,13 @@ provider "aws" {
   shared_credentials_files = ["~/.aws/credentials"]
   profile                  = "ericngigi"
 }
+
+terraform {
+  backend "s3" {
+    bucket       = "ericngigi-terraform-states"
+    key          = "three-tier-architecture/dev/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
+  }
+}
