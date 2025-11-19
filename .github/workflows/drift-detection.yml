@@ -1,0 +1,35 @@
+name: terraform_drift_detection
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+jobs:
+  drift-detection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Send Email Notification
+        env:
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+        run: |
+          python .github/scripts/send-email.py
+        # Add error handling
+        continue-on-error: true
+      - name: Check Workflow Status
+        if: failure()
+        run: |
+          echo " Drift detection workflow failed"
+          exit 1
